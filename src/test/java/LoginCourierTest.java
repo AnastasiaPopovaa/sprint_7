@@ -20,19 +20,22 @@ public class LoginCourierTest {
 
 
     Courier courier;
-    String id;
+    int id;
 
     @Before
     public void setUp() {
-        RestAssured.baseURI = BaseURI.BASE_URI;
+        //RestAssured.baseURI = BaseURI.BASE_URI;
+        RestAssured.requestSpecification = BaseURI.requestSpecification();
         login = RandomStringUtils.randomAlphabetic(10);
         password = RandomStringUtils.randomAlphabetic(8);
         firstName = RandomStringUtils.randomAlphabetic(8);
     }
 
     @After
-    public void tearDown() {
-        CourierOperations.deleteCourier(id);
+    public void cleanUp(){
+        if(id != 0) {
+            CourierOperations.deleteCourier(id);
+        }
     }
 
     @Test
@@ -47,7 +50,7 @@ public class LoginCourierTest {
                 .and()
                 .body("id", notNullValue());
         //id для последующего удаления курьера
-        id = response.then().extract().path("id").toString();
+        id = response.then().extract().jsonPath().getInt("id");
     }
 
     @Test

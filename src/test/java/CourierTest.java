@@ -13,26 +13,27 @@ import utils.BaseURI;
 import static org.hamcrest.CoreMatchers.equalTo;
 
 
-public class CourierTest {
+public class CourierTest  {
     private static String login;
     private static String password;
     private static String firstName;
 
 
     Courier courier;
-    String id;
+    int id;
 
     @Before
     public void setUp() {
-        RestAssured.baseURI = BaseURI.BASE_URI;
         login = RandomStringUtils.randomAlphabetic(10);
         password = RandomStringUtils.randomAlphabetic(8);
         firstName = RandomStringUtils.randomAlphabetic(8);
     }
 
     @After
-    public void tearDown() {
-        CourierOperations.deleteCourier(id);
+    public void cleanUp(){
+        if(id != 0) {
+            CourierOperations.deleteCourier(id);
+        }
     }
 
     @Test
@@ -40,8 +41,8 @@ public class CourierTest {
     public void createNewCourierGetSuccessResponse() {
         courier = new Courier(login, password, firstName);
         Response response = CourierOperations.createCourier(courier);
-        //id нужен для последующего удаления курьера
-        id = CourierOperations.signInCourier(courier).then().extract().path("id").toString();
+        //id нужен для удаления курьера
+        id = CourierOperations.signInCourier(courier).then().extract().jsonPath().getInt("id");
         response.then().assertThat().statusCode(HttpStatus.SC_CREATED)
                 .and()
                 .body("ok", equalTo(true));

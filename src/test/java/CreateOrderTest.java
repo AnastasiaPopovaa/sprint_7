@@ -37,7 +37,7 @@ public class CreateOrderTest {
 
     @Before
     public void setUp() {
-        RestAssured.baseURI = BaseURI.BASE_URI;
+        RestAssured.requestSpecification = BaseURI.requestSpecification();
     }
 
     @After

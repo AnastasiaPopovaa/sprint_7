@@ -3,6 +3,7 @@ package order;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import utils.APIs;
+import utils.BaseURI;
 
 import static io.restassured.RestAssured.given;
 
@@ -10,6 +11,7 @@ public class OrderOperations {
     @Step("Create an order")
     public static Response createOrder(Order order) {
         Response response = given()
+                .spec(BaseURI.requestSpecification())
                 .header("Content-type", "application/json")
                 .and()
                 .body(order)
@@ -22,6 +24,7 @@ public class OrderOperations {
     public static void cancelOrder(String track) {
         if (track != null)
             given()
+                    .spec(BaseURI.requestSpecification())
                     .header("Content-type", "application/json")
                     .and()
                     .body(track)

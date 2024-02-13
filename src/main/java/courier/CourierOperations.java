@@ -3,6 +3,7 @@ package courier;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import utils.APIs;
+import utils.BaseURI;
 
 import static io.restassured.RestAssured.given;
 
@@ -11,6 +12,7 @@ public class CourierOperations {
     @Step("Создание курьера")
     public static Response createCourier(Courier courier) {
         Response response = given()
+                .spec(BaseURI.requestSpecification())
                 .header("Content-type", "application/json")
                 .and()
                 .body(courier)
@@ -22,6 +24,7 @@ public class CourierOperations {
     @Step("Авторизация курьера")
     public static Response signInCourier(Courier courier) {
         Response response = given()
+                .spec(BaseURI.requestSpecification())
                 .header("Content-type", "application/json")
                 .and()
                 .body(courier)
@@ -31,9 +34,10 @@ public class CourierOperations {
     }
 
     @Step("Удаление курьера")
-    public static void deleteCourier(String id) {
-        if (id != null)
+    public static void deleteCourier(int id) {
+        if (id != 0)
             given()
+                    .spec(BaseURI.requestSpecification())
                     .header("Content-type", "application/json")
                     .and()
                     .body(id)
