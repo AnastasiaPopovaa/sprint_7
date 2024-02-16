@@ -9,6 +9,7 @@ import static io.restassured.RestAssured.given;
 
 public class CourierOperations {
 
+
     @Step("Создание курьера")
     public static Response createCourier(Courier courier) {
         Response response = given()
@@ -19,6 +20,7 @@ public class CourierOperations {
                 .when()
                 .post(APIs.COURIER_PATH);
         return response;
+
     }
 
     @Step("Авторизация курьера")
@@ -34,15 +36,14 @@ public class CourierOperations {
     }
 
     @Step("Удаление курьера")
-    public static void deleteCourier(int id) {
-        if (id != 0)
-            given()
-                    .spec(BaseURI.requestSpecification())
-                    .header("Content-type", "application/json")
-                    .and()
-                    .body(id)
-                    .when()
-                    .delete(APIs.COURIER_PATH + id);
+    public static void deleteCourier(String id) {
+        given()
+                .spec(BaseURI.requestSpecification())
+                .header("Content-type", "application/json")
+                .when()
+                .delete(APIs.COURIER_DELETE + id);
+
     }
+
 }
-//
+

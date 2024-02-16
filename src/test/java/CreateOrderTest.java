@@ -35,11 +35,6 @@ public class CreateOrderTest {
         };
     }
 
-    @Before
-    public void setUp() {
-        RestAssured.requestSpecification = BaseURI.requestSpecification();
-    }
-
     @After
     public void tearDown() {
         OrderOperations.cancelOrder(track);

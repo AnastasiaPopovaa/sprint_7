@@ -20,12 +20,10 @@ public class LoginCourierTest {
 
 
     Courier courier;
-    int id;
+    String id;
 
     @Before
     public void setUp() {
-        //RestAssured.baseURI = BaseURI.BASE_URI;
-        RestAssured.requestSpecification = BaseURI.requestSpecification();
         login = RandomStringUtils.randomAlphabetic(10);
         password = RandomStringUtils.randomAlphabetic(8);
         firstName = RandomStringUtils.randomAlphabetic(8);
@@ -33,8 +31,11 @@ public class LoginCourierTest {
 
     @After
     public void cleanUp(){
-        if(id != 0) {
+        try {
+            id = CourierOperations.signInCourier(courier).then().extract().path("id").toString();
             CourierOperations.deleteCourier(id);
+        } catch (NullPointerException e) {
+            System.out.println("Невозможно удалить несуществующего курьера");
         }
     }
 
@@ -49,8 +50,6 @@ public class LoginCourierTest {
                 .statusCode(HttpStatus.SC_OK)
                 .and()
                 .body("id", notNullValue());
-        //id для последующего удаления курьера
-        id = response.then().extract().jsonPath().getInt("id");
     }
 
     @Test

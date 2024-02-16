@@ -2,6 +2,7 @@ import courier.Courier;
 import courier.CourierOperations;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.RestAssured;
+import io.restassured.internal.ValidatableResponseImpl;
 import io.restassured.response.Response;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.http.HttpStatus;
@@ -11,6 +12,7 @@ import org.junit.Test;
 import utils.BaseURI;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertEquals;
 
 
 public class CourierTest  {
@@ -20,7 +22,8 @@ public class CourierTest  {
 
 
     Courier courier;
-    int id;
+    String id;
+
 
     @Before
     public void setUp() {
@@ -31,18 +34,20 @@ public class CourierTest  {
 
     @After
     public void cleanUp(){
-        if(id != 0) {
+        try {
+            id = CourierOperations.signInCourier(courier).then().extract().path("id").toString();
             CourierOperations.deleteCourier(id);
+        } catch (NullPointerException e) {
+            System.out.println("Невозможно удалить несуществующего курьера");
         }
-    }
+   }
+
 
     @Test
-    @DisplayName("Слздание курьера используя корректные данные")
+    @DisplayName("Создание курьера используя корректные данные")
     public void createNewCourierGetSuccessResponse() {
         courier = new Courier(login, password, firstName);
         Response response = CourierOperations.createCourier(courier);
-        //id нужен для удаления курьера
-        id = CourierOperations.signInCourier(courier).then().extract().jsonPath().getInt("id");
         response.then().assertThat().statusCode(HttpStatus.SC_CREATED)
                 .and()
                 .body("ok", equalTo(true));
@@ -57,7 +62,6 @@ public class CourierTest  {
                 .then().assertThat().statusCode(HttpStatus.SC_BAD_REQUEST)
                 .and()
                 .body("message", equalTo("Недостаточно данных для создания учетной записи"));
-
     }
 
     @Test
@@ -81,7 +85,7 @@ public class CourierTest  {
                 .body("message", equalTo("Недостаточно данных для создания учетной записи"));
     }
 
-    //Тут баг - комментарий не соответствует документаци
+    //Тут баг - комментарий не соответствует документациb
      @Test
     @DisplayName("Создание существующего курьера")
     public void createTwoSimilarCourierGetError() {

@@ -31,6 +31,17 @@ public class OrderOperations {
                     .when()
                     .delete(APIs.CANCEL_ORDER_PATH + track);
     }
+
+    @Step("Get order List")
+    public static Response getOrderList(){
+        Response response = given()
+                .spec(BaseURI.requestSpecification())
+                .header("Content-type", "application/json")
+                .when()
+                .get(APIs.ORDER_PATH);
+        return response;
+    }
+
 }
 
 //

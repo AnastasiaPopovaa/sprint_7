@@ -1,5 +1,7 @@
 package courier;
 
+import io.restassured.response.ValidatableResponse;
+
 public class Courier {
     private String login;
     private String password;
